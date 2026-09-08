@@ -24,4 +24,4 @@ export function getSecurityStatus() {
 
 export function startSecurity(HOT) {
   console.log('[SECURITY] Access control active | Rate limit: 1000/min | Treasury CLASSIFIED')
-}v
+}
