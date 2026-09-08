@@ -2,7 +2,7 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand            = "node --max-old-space-size=150 --expose-gc --gc-interval=100 src/index.js"
+startCommand            = "node --max-old-space-size=120 --expose-gc --gc-interval=100 src/index.js"
 healthcheckPath         = "/ping"
 healthcheckTimeout      = 300
 restartPolicyType       = "ON_FAILURE"
