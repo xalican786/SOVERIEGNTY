@@ -1,6 +1,6 @@
 // src/cycles.js -- SOVEREIGNTY cycle manager
 
-import { H, DAILY_TARGET, MAX_CYCLES_DAY } from './config.js'
+import { H, DAILY_TARGET, } from './config.js'
 
 // For Sovereignty -- max cycles derived from propeller target and live flash
 const SOVEREIGNTY_MAX_CYCLES = 10_000_000  // same as Resonance -- governed by propeller
