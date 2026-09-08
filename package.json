@@ -1,11 +1,11 @@
 {
   "name": "sovereignty",
   "version": "1.0.0",
-  "description": "SOVEREIGNTY -- Final SSS System | Throughput Model | Algorithm-gated | P5 default | $2.401T/day",
+  "description": "SOVEREIGNTY -- Final SSS System | Throughput Model | Algorithm-gated | P5 default",
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "start": "node --max-old-space-size=150 --expose-gc --gc-interval=100 src/index.js"
+    "start": "node --max-old-space-size=120 --expose-gc --gc-interval=100 src/index.js"
   },
   "dependencies": {
     "ethers":  "6.17.0",
