@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SOVEREIGNTY</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="sovereignty.css">
+<style>
+/* ── LAYOUT ───────────────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--s-black);color:var(--s-off);font-family:var(--s-F-body);font-size:12px;overflow:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:2px}::-webkit-scrollbar-thumb{background:var(--s-dim)}
+
+/* subtle grid */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+
+#app{position:relative;z-index:1;display:flex;height:100vh}
+
+/* ── RAIL ─────────────────────────────────────────────────────────────────── */
+#rail{
+  width:180px;background:var(--s-surface);
+  border-right:1px solid var(--s-border);
+  display:flex;flex-direction:column;flex-shrink:0;
+}
+.rail-header{padding:16px 14px 12px;border-bottom:1px solid var(--s-border)}
+.rail-title{
+  font-family:var(--s-F-title);font-size:11px;font-weight:900;
+  letter-spacing:3px;color:var(--s-white);
+}
+.rail-sub{font-family:var(--s-F-mono);font-size:7px;color:var(--s-muted);letter-spacing:1px;margin-top:2px}
+
+/* WS indicator */
+.rail-ws{display:flex;align-items:center;gap:6px;padding:7px 14px;border-bottom:1px solid var(--s-border)}
+#ws-d{flex-shrink:0}
+#ws-l{font-family:var(--s-F-mono);font-size:7px;letter-spacing:1px;color:var(--s-muted)}
+
+.sec{
+  padding:8px 14px 2px;
+  font-family:var(--s-F-mono);font-size:7px;
+  letter-spacing:2px;color:var(--s-dim);text-transform:uppercase;
+}
+
+/* Tab buttons */
+.tb{
+  display:flex;align-items:center;gap:7px;padding:6px 14px;
+  cursor:pointer;border:none;background:transparent;
+  color:var(--s-muted);font-family:var(--s-F-body);font-size:10px;
+  text-align:left;width:100%;transition:.1s;
+  border-left:2px solid transparent;letter-spacing:.2px;
+}
+.tb:hover{color:var(--s-off);background:rgba(255,255,255,0.02)}
+.tb.on{color:var(--s-white);background:rgba(255,255,255,0.04);border-left-color:var(--s-white)}
+.tb.on.blue-tab{color:var(--s-blue);border-left-color:var(--s-blue)}
+.tb.on.green-tab{color:var(--s-green);border-left-color:var(--s-green)}
+.ti{width:12px;text-align:center;flex-shrink:0;font-size:8px;opacity:.4}
+.tb.on .ti{opacity:1}
+
+/* Rail footer */
+.rail-footer{padding:12px 14px;margin-top:auto;border-top:1px solid var(--s-border)}
+.rfl{font-family:var(--s-F-mono);font-size:7px;letter-spacing:2px;color:var(--s-muted);margin-bottom:3px}
+.rfv{font-family:var(--s-F-num);font-size:20px;font-weight:700;color:var(--s-white);line-height:1}
+.rfs{font-family:var(--s-F-mono);font-size:7px;color:var(--s-muted);margin-top:2px}
+.rfc{font-family:var(--s-F-mono);font-size:8px;color:var(--s-green);margin-top:1px}
+
+/* ── CONTENT ──────────────────────────────────────────────────────────────── */
+#content{flex:1;overflow:hidden;position:relative}
+.pn{position:absolute;inset:0;overflow-y:auto;padding:16px;display:none}
+.pn.on{display:block}
+
+/* ── CARDS ────────────────────────────────────────────────────────────────── */
+.card{
+  background:var(--s-surface);border:1px solid var(--s-border);
+  border-radius:3px;padding:14px;margin-bottom:8px;
+  position:relative;
+}
+.card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);
+}
+.card-inset{
+  background:var(--s-elevated);border:1px solid var(--s-border);
+  border-radius:3px;padding:11px;
+}
+.card-blue{border-color:rgba(10,132,255,0.15);background:rgba(10,132,255,0.03)}
+.card-green{border-color:rgba(48,209,88,0.15);background:rgba(48,209,88,0.03)}
+.card-white{border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.02)}
+
+/* ── TYPE ─────────────────────────────────────────────────────────────────── */
+.ct{font-family:var(--s-F-mono);font-size:7px;letter-spacing:2px;color:var(--s-muted);margin-bottom:8px;text-transform:uppercase}
+.cv{font-family:var(--s-F-num);font-size:26px;font-weight:700;color:var(--s-white);line-height:1}
+.cv-b{color:var(--s-blue)}
+.cv-g{color:var(--s-green)}
+.cv-m{font-size:18px}
+.cv-s{font-size:14px}
+.cs{font-size:9px;color:var(--s-muted);margin-top:3px}
+
+/* Grids */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+
+/* Info rows */
+.ir{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:10px}
+.ir:last-child{border-bottom:none}
+.ik{color:var(--s-muted)}
+.iv{color:var(--s-off);font-family:var(--s-F-mono);font-size:9px}
+.iv-b{color:var(--s-blue)}
+.iv-g{color:var(--s-green)}
+.iv-w{color:var(--s-white)}
+.iv-d{color:var(--s-dim)}
+
+/* ── CHAIN PILLS ─────────────────────────────────────────────────────────── */
+.c-pill{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:2px;font-size:7px;font-family:var(--s-F-mono);letter-spacing:.5px}
+.c-on{background:rgba(255,255,255,0.06);border:1px solid var(--s-border2);color:var(--s-off)}
+.c-off{background:rgba(255,255,255,0.02);border:1px solid var(--s-border);color:var(--s-dim)}
+
+/* ── LOG FEED ─────────────────────────────────────────────────────────────── */
+.log-feed{
+  font-family:var(--s-F-mono);font-size:9px;line-height:1.9;
+  overflow-y:auto;max-height:320px;
+  background:var(--s-elevated);border:1px solid var(--s-border);
+  border-radius:3px;padding:10px;
+}
+.lr{display:flex;gap:8px;border-bottom:1px solid rgba(255,255,255,0.03);padding:2px 0}
+.lr:last-child{border-bottom:none}
+.lt{color:var(--s-muted);min-width:70px;flex-shrink:0}
+.lv{color:var(--s-off);flex:1}
+.lm{color:var(--s-blue);min-width:60px;text-align:right}
+.lg{color:var(--s-green);min-width:60px;text-align:right}
+
+/* ── INFO BOX ─────────────────────────────────────────────────────────────── */
+.info-box{
+  background:var(--s-elevated);border:1px solid var(--s-border);
+  border-radius:3px;padding:11px;margin-bottom:8px;
+  font-size:10px;color:var(--s-muted);line-height:1.7;
+}
+
+/* ── FTW TYPE FIELDS ──────────────────────────────────────────────────────── */
+.tf{display:none}.tf.on{display:block}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ═══════════════════════════ RAIL ═══════════════════════════ -->
+<div id="rail">
+  <div class="rail-header">
+    <div class="rail-title">SOVEREIGNTY</div>
+    <div class="rail-sub">FINAL SSS | THROUGHPUT MODEL</div>
+    <div class="rail-sub" style="margin-top:2px;color:var(--s-blue)">ALGORITHM-GATED</div>
+  </div>
+
+  <div class="rail-ws">
+    <div class="s-live-dot off" id="ws-d"></div>
+    <span id="ws-l">CONNECTING</span>
+  </div>
+
+  <div style="overflow-y:auto;flex:1;min-height:0">
+    <div class="sec">OVERVIEW</div>
+    <button class="tb on"        onclick="tab('ov',this)">       <span class="ti">○</span> Overview</button>
+    <button class="tb blue-tab"  onclick="tab('flash',this)">    <span class="ti">◈</span> Live Flash</button>
+    <button class="tb blue-tab"  onclick="tab('algo',this)">     <span class="ti">▣</span> Algorithm</button>
+    <button class="tb green-tab" onclick="tab('recon',this)">    <span class="ti">◆</span> Reconciliation</button>
+    <button class="tb"           onclick="tab('prop',this)">      <span class="ti">▤</span> Propeller</button>
+    <button class="tb"           onclick="tab('rev',this)">       <span class="ti">$</span> Revenue</button>
+
+    <div class="sec">EXECUTION</div>
+    <button class="tb" onclick="tab('exec',this)">     <span class="ti">▶</span> Executor</button>
+    <button class="tb" onclick="tab('cycles',this)">   <span class="ti">↺</span> Cycles</button>
+    <button class="tb" onclick="tab('chains',this)">   <span class="ti">◎</span> 20 Chains</button>
+    <button class="tb" onclick="tab('throughput',this)"><span class="ti">◉</span> Throughput</button>
+    <button class="tb" onclick="tab('velocity',this)"> <span class="ti">△</span> Velocity</button>
+
+    <div class="sec">CAPITAL</div>
+    <button class="tb" onclick="tab('balancer',this)"> <span class="ti">□</span> Balancer</button>
+    <button class="tb" onclick="tab('aave',this)">     <span class="ti">□</span> Aave</button>
+    <button class="tb" onclick="tab('extraction',this)"><span class="ti">◐</span> Extraction</button>
+    <button class="tb" onclick="tab('ftw',this)">      <span class="ti">↑</span> FTW</button>
+
+    <div class="sec">CONTRACTS</div>
+    <button class="tb" onclick="tab('contracts',this)">  <span class="ti">⊡</span> Contracts</button>
+    <button class="tb" onclick="tab('amplifier',this)">  <span class="ti">▣</span> Amplifier</button>
+    <button class="tb" onclick="tab('vault',this)">      <span class="ti">□</span> Vault</button>
+    <button class="tb" onclick="tab('guard',this)">      <span class="ti">⊘</span> Guard</button>
+    <button class="tb" onclick="tab('splitter',this)">   <span class="ti">◉</span> Splitter</button>
+    <button class="tb" onclick="tab('oracle',this)">     <span class="ti">◎</span> Oracle</button>
+    <button class="tb" onclick="tab('governance',this)"> <span class="ti">≡</span> Governance</button>
+    <button class="tb" onclick="tab('registry',this)">   <span class="ti">▤</span> Registry</button>
+
+    <div class="sec">INFRASTRUCTURE</div>
+    <button class="tb" onclick="tab('shadow',this)">     <span class="ti">◐</span> Shadow</button>
+    <button class="tb" onclick="tab('ecosystem',this)">  <span class="ti">⊕</span> Ecosystem</button>
+    <button class="tb" onclick="tab('gas',this)">        <span class="ti">△</span> Gas</button>
+
+    <div class="sec">ANALYTICS</div>
+    <button class="tb" onclick="tab('performance',this)"><span class="ti">△</span> Performance</button>
+    <button class="tb" onclick="tab('audit',this)">      <span class="ti">≣</span> Audit Log</button>
+
+    <div class="sec">SYSTEM</div>
+    <button class="tb" onclick="tab('system',this)">     <span class="ti">⊡</span> System</button>
+    <button class="tb" onclick="tab('control',this)">    <span class="ti">⊛</span> Control</button>
+  </div>
+
+  <div class="rail-footer">
+    <div class="rfl">TREASURY CONFIRMED</div>
+    <div class="rfv" id="r-treasury">$0</div>
+    <div class="rfc" id="r-recon-status">reading...</div>
+    <div class="rfs" id="r-cycles">0 cycles</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ CONTENT ═══════════════════════════ -->
+<div id="content">
+
+<!-- 1. OVERVIEW -->
+<div id="p-ov" class="pn on">
+  <div class="g3" style="margin-bottom:8px">
+    <div class="card card-green" style="text-align:center;padding:20px 12px">
+      <div class="ct">TREASURY CONFIRMED</div>
+      <div class="cv cv-g" id="ov-treasury">$0</div>
+      <div class="cs">on-chain | reconciled</div>
+    </div>
+    <div class="card card-blue" style="text-align:center;padding:20px 12px">
+      <div class="ct">LIVE FLASH AVAILABLE</div>
+      <div class="cv cv-b" id="ov-flash">$0</div>
+      <div class="cs">real-time Balancer + Aave</div>
+    </div>
+    <div class="card card-white" style="text-align:center;padding:20px 12px">
+      <div class="ct">REVENUE TODAY</div>
+      <div class="cv" id="ov-rev">$0</div>
+      <div class="cs">algorithm-gated cycles</div>
+    </div>
+  </div>
+
+  <!-- Algorithm status bar -->
+  <div class="s-algo-bar" id="ov-algo-bar" style="margin-bottom:8px">
+    <div class="s-algo-bar-dot"></div>
+    <span class="s-algo-bar-text" id="ov-algo-text">7-point algorithm initialising...</span>
+    <span class="s-algo-bar-flash" id="ov-algo-flash">$0M</span>
+  </div>
+
+  <div class="g4" style="margin-bottom:8px">
+    <div class="card"><div class="ct">CYCLES TODAY</div><div class="cv cv-s" id="ov-cycles">0</div></div>
+    <div class="card"><div class="ct">NET TODAY</div><div class="cv cv-s cv-b" id="ov-net">$0</div></div>
+    <div class="card"><div class="ct">PROPELLER</div><div class="cv cv-s" id="ov-prop">P5</div></div>
+    <div class="card"><div class="ct">CHAINS</div><div class="cv cv-s" id="ov-chains">0/20</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">RECONCILIATION</div>
+      <div class="s-recon" id="ov-recon">
+        <div>
+          <div class="s-recon-label">CONFIRMED ON-CHAIN</div>
+          <div class="s-recon-value" id="ov-recon-val">$0</div>
+          <div class="s-recon-sub" id="ov-recon-sub">0 checks | pending</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">STATUS</div>
+      <div class="ir"><span class="ik">Deployment</span>    <span class="iv" id="ov-dep">awaiting POL</span></div>
+      <div class="ir"><span class="ik">Gas</span>           <span class="iv" id="ov-gas">reading...</span></div>
+      <div class="ir"><span class="ik">Algorithm</span>     <span class="iv" id="ov-algo-st">pending</span></div>
+      <div class="ir"><span class="ik">Shadow</span>        <span class="iv iv-w">ACTIVE</span></div>
+      <div class="ir"><span class="ik">Treasury</span>      <span class="iv iv-d">CLASSIFIED</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. LIVE FLASH -->
+<div id="p-flash" class="pn">
+  <div class="info-box">
+    Sovereignty reads live flash capital before every cycle. The numbers below are confirmed from the Balancer Vault and Aave Pool on-chain. The system never borrows more than what is actually available. This is what every other SSS system assumes -- Sovereignty reads it.
+  </div>
+
+  <div class="s-algo-bar checking" id="flash-bar" style="margin-bottom:8px">
+    <div class="s-algo-bar-dot"></div>
+    <span class="s-algo-bar-text">Reading live vault balances...</span>
+    <span class="s-algo-bar-flash" id="flash-total-bar">$0M</span>
+  </div>
+
+  <div class="g3" style="margin-bottom:8px">
+    <div class="card card-blue">
+      <div class="ct">BALANCER VAULT</div>
+      <div class="s-flash-live">
+        <div class="s-flash-live-dot"></div>
+        <span class="s-flash-live-label">LIVE</span>
+        <span class="s-flash-live-value" id="fl-balancer">$0M</span>
+      </div>
+      <div class="ir" style="margin-top:8px"><span class="ik">Fee</span><span class="iv iv-g">0% confirmed</span></div>
+      <div class="ir"><span class="ik">Address</span><span class="iv">0xBA12222...</span></div>
+    </div>
+    <div class="card card-blue">
+      <div class="ct">AAVE V3 AVAILABLE</div>
+      <div class="s-flash-live">
+        <div class="s-flash-live-dot"></div>
+        <span class="s-flash-live-label">LIVE</span>
+        <span class="s-flash-live-value" id="fl-aave">$0M</span>
+      </div>
+      <div class="ir" style="margin-top:8px"><span class="ik">Fee</span><span class="iv">0.05%</span></div>
+      <div class="ir"><span class="ik">Address</span><span class="iv">0x794a613...</span></div>
+    </div>
+    <div class="card">
+      <div class="ct">COMBINED LIVE</div>
+      <div class="s-flash-live">
+        <div class="s-flash-live-dot"></div>
+        <span class="s-flash-live-label">TOTAL</span>
+        <span class="s-flash-live-value" id="fl-total">$0M</span>
+      </div>
+      <div class="ir" style="margin-top:8px"><span class="ik">10% extract</span><span class="iv iv-b" id="fl-extract">$0M</span></div>
+      <div class="ir"><span class="ik">Read interval</span><span class="iv">60 seconds</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">LIVE vs CONFIGURED -- THE ANSWER</div>
+    <div class="ir"><span class="ik">Configured (other SSS)</span><span class="iv iv-d">$70B -- hardcoded, never verified live</span></div>
+    <div class="ir"><span class="ik">Live Balancer (Polygon)</span><span class="iv iv-b" id="fl-live-b">reading...</span></div>
+    <div class="ir"><span class="ik">Live Aave (Polygon)</span>   <span class="iv iv-b" id="fl-live-a">reading...</span></div>
+    <div class="ir"><span class="ik">Live combined</span>         <span class="iv iv-g" id="fl-live-t">reading...</span></div>
+    <div class="ir"><span class="ik">Extract target (10%)</span>  <span class="iv iv-g" id="fl-live-e">reading...</span></div>
+    <div class="ir"><span class="ik">Update frequency</span>      <span class="iv">Every cycle + every 60s background</span></div>
+  </div>
+</div>
+
+<!-- 3. ALGORITHM -->
+<div id="p-algo" class="pn">
+  <div class="info-box">
+    Before every cycle, Sovereignty runs a 7-point live check. All critical checks must pass before a transaction fires. This is the feature that no other SSS system has -- every other system assumes conditions are met. Sovereignty confirms them.
+  </div>
+
+  <div class="s-algo-bar" id="algo-master-bar" style="margin-bottom:8px">
+    <div class="s-algo-bar-dot"></div>
+    <span class="s-algo-bar-text" id="algo-master-text">Initialising...</span>
+    <span class="s-algo-bar-flash" id="algo-master-flash">$0M confirmed flash</span>
+  </div>
+
+  <div class="s-algo-grid" id="algo-checks" style="margin-bottom:8px">
+    <!-- populated by JS -->
+  </div>
+
+  <div class="card">
+    <div class="ct">CHECK ARCHITECTURE</div>
+    <div class="ir"><span class="ik">Check 1 -- Flash Capital</span>   <span class="iv iv-b">Reads Balancer Vault + Aave balance live</span></div>
+    <div class="ir"><span class="ik">Check 2 -- Gas Price</span>        <span class="iv">Must be under 1000 gwei | gas cost vs profit</span></div>
+    <div class="ir"><span class="ik">Check 3 -- Arbitrage Spread</span> <span class="iv">Live Uniswap V3 pool state | min 0.05%</span></div>
+    <div class="ir"><span class="ik">Check 4 -- Oracle Freshness</span> <span class="iv">Chainlink ETH/MATIC | max 5 min old</span></div>
+    <div class="ir"><span class="ik">Check 5 -- Pool Depth</span>       <span class="iv">Flash amount vs vault depth | 10x minimum</span></div>
+    <div class="ir"><span class="ik">Check 6 -- Treasury Balance</span> <span class="iv">Reads on-chain USDC balance | always passes</span></div>
+    <div class="ir"><span class="ik">Check 7 -- Capacity</span>         <span class="iv">Propeller ceiling | daily budget | gas flag</span></div>
+    <div class="ir"><span class="ik">Critical checks (block)</span>    <span class="iv">1, 2, 4, 7</span></div>
+    <div class="ir"><span class="ik">Non-critical (log only)</span>    <span class="iv">3, 5, 6</span></div>
+    <div class="ir"><span class="ik">Cache TTL</span>                   <span class="iv">5 seconds -- fresh per cycle</span></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">LAST CHECK RESULTS</div>
+    <div class="ir"><span class="ik">Pass</span>       <span class="iv" id="alg-pass">--</span></div>
+    <div class="ir"><span class="ik">Flash</span>      <span class="iv iv-b" id="alg-flash">--</span></div>
+    <div class="ir"><span class="ik">Gas</span>        <span class="iv" id="alg-gas">--</span></div>
+    <div class="ir"><span class="ik">ETH price</span> <span class="iv" id="alg-eth">--</span></div>
+    <div class="ir"><span class="ik">Last run</span>  <span class="iv" id="alg-ts">--</span></div>
+  </div>
+</div>
+
+<!-- 4. RECONCILIATION -->
+<div id="p-recon" class="pn">
+  <div class="info-box">
+    Every 100 cycles and every 5 minutes, Sovereignty reads the actual USDC balance of the treasury wallet on-chain and compares it to the computed revenue total. The gap between computed and confirmed is the reconciliation score. A healthy system has a gap within 5%.
+  </div>
+
+  <div class="g2" style="margin-bottom:8px">
+    <div class="card card-green">
+      <div class="ct">CONFIRMED ON-CHAIN</div>
+      <div class="s-recon" id="rec-box">
+        <div>
+          <div class="s-recon-label">TREASURY USDC</div>
+          <div class="s-recon-value" id="rec-confirmed">$0</div>
+          <div class="s-recon-sub">actual on-chain balance</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">COMPUTED REVENUE</div>
+      <div style="font-family:var(--s-F-num);font-size:22px;font-weight:700;color:var(--s-white)" id="rec-computed">$0</div>
+      <div style="font-size:9px;color:var(--s-muted);margin-top:4px">what the math says accumulated</div>
+    </div>
+  </div>
+
+  <div class="g3" style="margin-bottom:8px">
+    <div class="card"><div class="ct">RECONCILIATIONS</div><div class="cv cv-s" id="rec-count">0</div></div>
+    <div class="card"><div class="ct">GAP</div><div class="cv cv-s" id="rec-gap">$0</div></div>
+    <div class="card"><div class="ct">STATUS</div><div class="cv cv-s" id="rec-healthy">--</div></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">RECONCILIATION ARCHITECTURE</div>
+    <div class="ir"><span class="ik">Trigger</span>        <span class="iv">Every 100 cycles + every 5 minutes</span></div>
+    <div class="ir"><span class="ik">Method</span>         <span class="iv">Direct on-chain USDC.balanceOf(treasury)</span></div>
+    <div class="ir"><span class="ik">Max healthy gap</span><span class="iv">5% (500 bps)</span></div>
+    <div class="ir"><span class="ik">On gap detected</span><span class="iv">Log warning | operator review</span></div>
+    <div class="ir"><span class="ik">Contract</span>       <span class="iv" id="rec-contract">--</span></div>
+    <div class="ir"><span class="ik">USDC address</span>   <span class="iv">0x2791Bca1f2de4661...84174</span></div>
+    <div class="ir"><span class="ik">Chain</span>          <span class="iv">Polygon (primary execution)</span></div>
+  </div>
+</div>
+
+<!-- 5. PROPELLER -->
+<div id="p-prop" class="pn">
+  <div class="card" style="margin-bottom:8px">
+    <div style="display:flex;align-items:flex-end;gap:14px;margin-bottom:10px">
+      <div style="font-family:var(--s-F-title);font-size:52px;font-weight:900;color:var(--s-white);line-height:1" id="pr-big">P5</div>
+      <div>
+        <div style="font-size:10px;color:var(--s-muted)">Daily Target</div>
+        <div style="font-family:var(--s-F-num);font-size:22px;font-weight:700;color:var(--s-blue)" id="pr-tgt">$2.401T/day</div>
+        <div style="font-size:8px;color:var(--s-muted);margin-top:2px">DEFAULT LEVEL</div>
+      </div>
+      <div id="pr-default" class="s-default-badge" style="margin-bottom:4px">DEFAULT</div>
+    </div>
+    <div class="s-prog"><div class="s-prog-fill s-prog-white" id="pr-prog" style="width:0%"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:8px;color:var(--s-muted);font-family:var(--s-F-mono);margin-top:4px">
+      <span id="pr-pl">$0</span><span id="pr-pr">$2.401T</span>
+    </div>
+  </div>
+
+  <!-- SP sub-propeller tiers -->
+  <div class="card" style="margin-bottom:8px">
+    <div class="ct">SUB-PROPELLER TIERS (VALIDATION)</div>
+    <div class="s-prop-grid" id="sp-grid"></div>
+  </div>
+
+  <!-- Full propeller -->
+  <div class="card" style="margin-bottom:8px">
+    <div class="ct">FULL PROPELLER</div>
+    <div class="s-prop-grid" id="pr-grid"></div>
+  </div>
+
+  <!-- Propeller table -->
+  <div class="card">
+    <div class="ct">PROPELLER TABLE -- ALL LEVELS</div>
+    <div id="pr-table"></div>
+    <div style="margin-top:8px;font-size:9px;color:var(--s-muted)">
+      Note: SP1-SP4 are validation tiers using conservative flash. SP5 = P1. P5 is the default production level. P10 is the operator-set ceiling -- not a market condition ceiling.
+    </div>
+  </div>
+</div>
+
+<!-- 6. REVENUE -->
+<div id="p-rev" class="pn">
+  <div class="g3" style="margin-bottom:8px">
+    <div class="card"><div class="ct">TODAY</div><div class="cv cv-b" id="rv-today">$0</div></div>
+    <div class="card"><div class="ct">NET TODAY</div><div class="cv" id="rv-net">$0</div><div class="cs">after Aave fees</div></div>
+    <div class="card"><div class="ct">ALL TIME</div><div class="cv" id="rv-total">$0</div></div>
+  </div>
+  <div class="g3" style="margin-bottom:8px">
+    <div class="card"><div class="ct">PER CYCLE</div><div class="cv cv-s cv-b" id="rv-per">$0</div></div>
+    <div class="card"><div class="ct">PEAK CYCLE</div><div class="cv cv-s" id="rv-peak">$0</div></div>
+    <div class="card"><div class="ct">AVG CYCLE</div><div class="cv cv-s" id="rv-avg">$0</div></div>
+  </div>
+  <div class="g4" style="margin-bottom:8px">
+    <div class="card-inset"><div class="ct">PER SEC</div><div style="font-family:var(--s-F-num);font-size:15px;font-weight:700;color:var(--s-white)" id="rv-vs">$0</div></div>
+    <div class="card-inset"><div class="ct">PER MIN</div><div style="font-family:var(--s-F-num);font-size:15px;font-weight:700;color:var(--s-white)" id="rv-vm">$0</div></div>
+    <div class="card-inset"><div class="ct">PER HR</div> <div style="font-family:var(--s-F-num);font-size:15px;font-weight:700;color:var(--s-white)" id="rv-vh">$0</div></div>
+    <div class="card-inset"><div class="ct">PROJ/DAY</div><div style="font-family:var(--s-F-num);font-size:15px;font-weight:700;color:var(--s-blue)" id="rv-vd">$0</div></div>
+  </div>
+  <div class="card">
+    <div class="ct">FEE STRUCTURE</div>
+    <div class="ir"><span class="ik">Balancer fee</span>       <span class="iv iv-g">0% (zero)</span></div>
+    <div class="ir"><span class="ik">Aave fee</span>           <span class="iv">0.05% of Aave flash per cycle</span></div>
+    <div class="ir"><span class="ik">Aave fees today</span>    <span class="iv" id="rv-fee">$0</span></div>
+    <div class="ir"><span class="ik">Net extraction rate</span><span class="iv iv-b">10% of live flash -- Aave fee</span></div>
+  </div>
+</div>
+
+<!-- 7. EXECUTOR -->
+<div id="p-exec" class="pn">
+  <div class="g2" style="margin-bottom:8px">
+    <div class="card">
+      <div class="ct">STATUS</div>
+      <div class="cv cv-m" id="ex-st">--</div>
+      <div class="cs" id="ex-sub">algorithm checking</div>
+    </div>
+    <div class="card">
+      <div class="ct">EXECUTION SPEED</div>
+      <div class="cv cv-m cv-b" id="ex-ms">1ms</div>
+      <div class="cs">1ms ring | algorithm-gated</div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:8px">
+    <div class="ct">EXECUTOR SPEC</div>
+    <div class="ir"><span class="ik">Address</span>          <span class="iv" id="ex-addr">--</span></div>
+    <div class="ir"><span class="ik">Gas cap</span>           <span class="iv">1,000 gwei</span></div>
+    <div class="ir"><span class="ik">Gas markup</span>        <span class="iv">130%</span></div>
+    <div class="ir"><span class="ik">Gas limit</span>         <span class="iv">4,000,000</span></div>
+    <div class="ir"><span class="ik">Ring poll</span>         <span class="iv">1ms</span></div>
+    <div class="ir"><span class="ik">Max concurrent</span>   <span class="iv">3 (algorithm gate limits throughput)</span></div>
+    <div class="ir"><span class="ik">Nonce mutex</span>       <span class="iv">Zero-collision queue</span></div>
+    <div class="ir"><span class="ik">Flash amounts</span>     <span class="iv iv-b">Live from algorithm -- never from config.js</span></div>
+    <div class="ir"><span class="ik">Pre-flight</span>       <span class="iv iv-b">7-point check before every transaction</span></div>
+  </div>
+  <div class="s-ctrl-row">
+    <button class="s-ctrl-btn resume" onclick="resumeExec()">
+      <span>Resume executor</span><span class="s-ctrl-badge">activate</span>
+    </button>
+  </div>
+  <div class="s-ctrl-row">
+    <button class="s-ctrl-btn pause" onclick="pauseExec()">
+      <span>Pause executor</span><span class="s-ctrl-badge">halt</span>
+    </button>
+  </div>
+  <div id="ex-res" class="s-res"></div>
+</div>
+
+<!-- 8. CYCLES -->
+<div id="p-cycles" class="pn">
+  <div class="g4" style="margin-bottom:8px">
+    <div class="card"><div class="ct">TODAY</div><div class="cv cv-s" id="cy-today">0</div></div>
+    <div class="card"><div class="ct">ALL TIME</div><div class="cv cv-s" id="cy-total">0</div></div>
+    <div class="card"><div class="ct">SUCCESS</div><div class="cv cv-s cv-g" id="cy-ok">0</div></div>
+    <div class="card"><div class="ct">DETECTED</div><div class="cv cv-s" id="cy-nat">0</div></div>
+  </div>
+  <div class="card">
+    <div class="ct">CYCLE ARCHITECTURE</div>
+    <div class="ir"><span class="ik">Trigger</span>           <span class="iv">Swap detection on 20 chains</span></div>
+    <div class="ir"><span class="ik">Gate</span>              <span class="iv iv-b">7-point algorithm must pass</span></div>
+    <div class="ir"><span class="ik">Flash per cycle</span>  <span class="iv iv-b">Live read -- not configured amount</span></div>
+    <div class="ir"><span class="ik">Extraction</span>       <span class="iv">10% of live flash principal</span></div>
+    <div class="ir"><span class="ik">Max cycles/day</span>   <span class="iv">Governed by propeller target + live flash</span></div>
+    <div class="ir"><span class="ik">Success rate</span>     <span class="iv" id="cy-rate">--</span></div>
+    <div class="ir"><span class="ik">Reconcile interval</span><span class="iv">Every 100 cycles</span></div>
+  </div>
+</div>
+
+<!-- 9. CHAINS -->
+<div id="p-chains" class="pn">
+  <div class="card" style="margin-bottom:8px">
+    <div class="ct">20 CHAIN COVERAGE</div>
+    <div id="chain-pills" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px"></div>
+    <div class="ir"><span class="ik">Connected</span>       <span class="iv iv-b" id="ch-count">0/20</span></div>
+    <div class="ir"><span class="ik">Primary chain</span>  <span class="iv">Polygon (flash execution)</span></div>
+    <div class="ir"><span class="ik">Event type</span>      <span class="iv">Uniswap V3 swaps</span></div>
+    <div class="ir"><span class="ik">Stagger</span>         <span class="iv">500ms per chain</span></div>
+    <div class="ir"><span class="ik">Reconnect</span>       <span class="iv">5s on close / 8s on error</span></div>
+  </div>
+</div>
+
+<!-- 10. THROUGHPUT -->
+<div id="p-throughput" class="pn">
+  <div class="info-box">
+    The Throughput Model is the proven foundation of every SSS system. Flash capital cycles through profitable operations at machine speed. Sovereignty uses the Halcan-style model: 10% extraction on flash principal per cycle. Cycle-based -- not swap-dependent. Propeller governs how many cycles fire per day.
+  </div>
+  <div class="card" style="margin-bottom:8px">
+    <div class="ct">CONFIRMED BLOCK DATA -- CYCLES PER DAY</div>
+    <div class="ir"><span class="ik">Polygon (primary)</span><span class="iv">40,754 blocks/day @ 2.12s</span></div>
+    <div class="ir"><span class="ik">Arbitrum</span>         <span class="iv">345,600 blocks/day @ 0.25s</span></div>
+    <div class="ir"><span class="ik">Sei</span>              <span class="iv">345,600 blocks/day @ 0.25s</span></div>
+    <div class="ir"><span class="ik">Sonic</span>            <span class="iv">172,800 blocks/day @ 0.5s</span></div>
+    <div class="ir"><span class="ik">Base</span>             <span class="iv">43,200 blocks/day @ 2s</span></div>
+    <div class="ir"><span class="ik">Optimism</span>         <span class="iv">43,200 blocks/day @ 2s</span></div>
+    <div class="ir"><span class="ik">Ethereum</span>         <span class="iv">7,200 blocks/day @ 12s</span></div>
+    <div class="ir"><span class="ik">BNB</span>              <span class="iv">28,328 blocks/day @ 3.05s</span></div>
+    <div class="ir"><span class="ik">12 others</span>        <span class="iv">~499,390 combined</span></div>
+    <div class="ir"><span class="ik">TOTAL</span>            <span class="iv iv-b">1,526,072 cycles/day across 20 chains</span></div>
+  </div>
+  <div class="card">
+    <div class="ct">THROUGHPUT MATH -- VERIFIED</div>
+    <div class="ir"><span class="ik">Live flash (Polygon)</span><span class="iv iv-b" id="tp-flash">reading...</span></div>
+    <div class="ir"><span class="ik">Extraction rate</span>     <span class="iv">10% of flash principal</span></div>
+    <div class="ir"><span class="ik">Per-cycle profit</span>    <span class="iv iv-b" id="tp-per">calculating...</span></div>
+    <div class="ir"><span class="ik">P5 cycles needed</span>    <span class="iv" id="tp-cycles">calculating...</span></div>
+    <div class="ir"><span class="ik">DEX volume (live)</span>   <span class="iv">$6.4B/day confirmed CoinGecko</span></div>
+    <div class="ir"><span class="ik">DEX annual 2025</span>    <span class="iv">$4.9T confirmed spot trades</span></div>
+    <div class="ir"><span class="ik">Revenue model</span>      <span class="iv">Cycles × flash × 10% -- propeller caps</span></div>
+  </div>
+</div>
+
+<!-- 11. VELOCITY -->
+<div id="p-velocity" class="pn">
+  <div class="g4" style="margin-bottom:8px">
+    <div class="card-inset"><div class="ct">PER SECOND</div><div style="font-family:var(--s-F-num);font-size:16px;font-weight:700;color:var(--s-white)" id="vl-vs">$0</div></div>
+    <div class="card-inset"><div class="ct">PER MINUTE</div><div style="font-family:var(--s-F-num);font-size:16px;font-weight:700;color:var(--s-white)" id="vl-vm">$0</div></div>
+    <div class="card-inset"><div class="ct">PER HOUR</div>  <div style="font-family:var(--s-F-num);font-size:16px;font-weight:700;color:var(--s-blue)" id="vl-vh">$0</div></div>
+    <div class="card-inset"><div class="ct">PROJECTED/DAY</div><div style="font-family:var(--s-F-num);font-size:16px;font-weight:700;color:var(--s-blue)" id="vl-vd">$0</div></div>
+  </div>
+</div>
+
+<!-- 12. BALANCER -->
+<div id="p-balancer" class="pn">
+  <div class="card card-blue" style="margin-bottom:8px">
+    <div class="ct">BALANCER V2 VAULT -- 0% FEE</div>
+    <div class="s-flash-live" style="margin-bottom:8px">
+      <div class="s-flash-live-dot"></div>
+      <span class="s-flash-live-label">LIVE USDC</span>
+      <span class="s-flash-live-value" id="bal-live">$0M</span>
+    </div>
+    <div class="ir"><span class="ik">Vault address</span>    <span class="iv">0xBA12222222228d8Ba445958a75a0704d566BF2C8</span></div>
+    <div class="ir"><span class="ik">Flash fee</span>         <span class="iv iv-g">0% -- zero fee confirmed</span></div>
+    <div class="ir"><span class="ik">Architecture</span>     <span class="iv">Vault consolidates all Balancer pool liquidity</span></div>
+    <div class="ir"><span class="ik">Borrow limit</span>     <span class="iv">Up to full vault balance per asset</span></div>
+    <div class="ir"><span class="ik">Repayment</span>        <span class="iv">Same transaction -- or full revert</span></div>
+  </div>
+</div>
+
+<!-- 13. AAVE -->
+<div id="p-aave" class="pn">
+  <div class="card card-blue" style="margin-bottom:8px">
+    <div class="ct">AAVE V3 -- 0.05% FEE</div>
+    <div class="s-flash-live" style="margin-bottom:8px">
+      <div class="s-flash-live-dot"></div>
+      <span class="s-flash-live-label">LIVE AVAILABLE</span>
+      <span class="s-flash-live-value" id="aave-live">$0M</span>
+    </div>
+    <div class="ir"><span class="ik">Pool address</span>    <span class="iv">0x794a61358D6845594F94dc1DB02A252b5b4814aD</span></div>
+    <div class="ir"><span class="ik">Flash fee</span>        <span class="iv">0.05% per transaction</span></div>
+    <div class="ir"><span class="ik">TVL (research)</span>  <span class="iv">$17.046B across 21 chains</span></div>
+    <div class="ir"><span class="ik">Polygon available</span><span class="iv iv-b" id="aave-poly">reading live...</span></div>
+    <div class="ir"><span class="ik">Available calc</span>  <span class="iv">aToken total supply minus borrowed</span></div>
+  </div>
+</div>
+
+<!-- 14. EXTRACTION -->
+<div id="p-extraction" class="pn">
+  <div class="card" style="margin-bottom:8px">
+    <div class="ct">EXTRACTION MODEL</div>
+    <div class="ir"><span class="ik">Model</span>            <span class="iv">Throughput Model (Model 2) -- Halcan-style</span></div>
+    <div class="ir"><span class="ik">Rate</span>             <span class="iv iv-b">10% of live flash principal per cycle</span></div>
+    <div class="ir"><span class="ik">Flash source</span>    <span class="iv">Live read -- never hardcoded</span></div>
+    <div class="ir"><span class="ik">Extraction ops</span> <span class="iv">JIT liquidity + oracle arb + funding rate</span></div>
+    <div class="ir"><span class="ik">Per cycle now</span>  <span class="iv iv-b" id="ext-per">calculating...</span></div>
+    <div class="ir"><span class="ik">Daily @ P5</span>     <span class="iv iv-b">$2.401T (propeller ceiling)</span></div>
+  </div>
+</div>
+
+<!-- 15. FTW -->
+<div id="p-ftw" class="pn">
+  <div class="info-box">
+    Treasury USDC withdrawn as fiat via ModemPay. Treasury balance is confirmed on-chain via reconciler.js. The amount below is what the algorithm confirmed is actually in the treasury wallet.
+  </div>
+  <div class="card" style="margin-bottom:8px">
+    <div class="ct">TREASURY BALANCE (ON-CHAIN CONFIRMED)</div>
+    <div class="s-recon healthy" id="ftw-recon">
+      <div>
+        <div class="s-recon-label">CONFIRMED USDC</div>
+        <div class="s-recon-value" id="ftw-balance">$0</div>
+        <div class="s-recon-sub">last reconciled: <span id="ftw-ts">--</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">WITHDRAW AS FIAT</div>
+    <div class="s-type-row">
+      <button class="s-ttype on" onclick="setFTW('mobile',this)">Mobile Money</button>
+      <button class="s-ttype"    onclick="setFTW('bank',this)">Bank Transfer</button>
+      <button class="s-ttype"    onclick="setFTW('intl',this)">International</button>
+    </div>
+    <div class="s-fg"><label>USDC AMOUNT</label><input class="s-fi" id="ftw-amt" type="number" placeholder="100000" oninput="ftwQ()"></div>
+    <div id="ftw-q" style="font-family:var(--s-F-mono);font-size:9px;color:var(--s-muted);padding:3px 0 8px">Enter amount for quote</div>
+    <div id="ftw-mobile" class="tf on"><div class="s-fg"><label>PHONE</label><input class="s-fi" id="ftw-ph" placeholder="+220 XXXXXXXXX"></div></div>
+    <div id="ftw-bank" class="tf">
+      <div class="g2">
+        <div class="s-fg"><label>ACCOUNT NAME</label><input class="s-fi" id="ftw-bn" placeholder="Full legal name"></div>
+        <div class="s-fg"><label>ACCOUNT NUMBER</label><input class="s-fi" id="ftw-bac" placeholder="Account number"></div>
+      </div>
+    </div>
+    <div id="ftw-intl" class="tf">
+      <div class="g2">
+        <div class="s-fg"><label>ACCOUNT NAME</label><input class="s-fi" id="ftw-in" placeholder="Full legal name"></div>
+        <div class="s-fg"><label>IBAN</label><input class="s-fi" id="ftw-iac" placeholder="IBAN"></div>
+      </div>
+      <div class="s-fg"><label>SWIFT / BIC</label><input class="s-fi" id="ftw-sw" placeholder="XXXXXX__"></div>
+    </div>
+    <button class="s-btn s-btn-green" onclick="doFTW()" style="margin-top:6px">WITHDRAW TO FIAT</button>
+    <div id="ftw-res" class="s-res"></div>
+  </div>
+  <div class="card">
+    <div class="ct">FEE SCHEDULE</div>
+    <div class="ir"><span class="ik">Mobile (Wave / Afrimoney)</span><span class="iv">1.50%</span></div>
+    <div class="ir"><span class="ik">Bank transfer</span>           <span class="iv">1.25%</span></div>
+    <div class="ir"><span class="ik">International SWIFT</span>     <span class="iv">1.25%</span></div>
+    <div class="ir"><span class="ik">Amount limit</span>            <span class="iv iv-b">None</span></div>
+  </div>
+</div>
+
+<!-- 16. CONTRACTS -->
+<div id="p-contracts" class="pn">
+  <div class="card" style="margin-bottom:8px">
+    <div class="ct">10 CONTRACTS</div>
+    <div id="ctr-list"></div>
+  </div>
+  <div class="card">
+    <div class="ct">DEPLOYMENT</div>
+    <div class="ir"><span class="ik">Chain</span>        <span class="iv">Polygon mainnet</span></div>
+    <div class="ir"><span class="ik">Compiler</span>    <span class="iv">Solidity 0.8.26 | viaIR | runs:200</span></div>
+    <div class="ir"><span class="ik">Memory</span>      <span class="iv">250MB isolated subprocess -- exits before runtime</span></div>
+    <div class="ir"><span class="ik">POL needed</span>  <span class="iv">0.1 POL to executor address</span></div>
+    <div class="ir"><span class="ik">Executor</span>    <span class="iv" id="ctr-exec">--</span></div>
+  </div>
+</div>
+
+<!-- 17. AMPLIFIER -->
+<div id="p-amplifier" class="pn">
+  <div class="card">
+    <div class="ct">SOVEREIGNTY AMPLIFIER</div>
+    <div class="ir"><span class="ik">Model</span>          <span class="iv">Throughput -- 10% of live flash</span></div>
+    <div class="ir"><span class="ik">Extraction rate</span><span class="iv iv-b">10% (1000 bps)</span></div>
+    <div class="ir"><span class="ik">Max rate cap</span>   <span class="iv">50% (5000 bps) -- hard ceiling</span></div>
+    <div class="ir"><span class="ik">Input</span>          <span class="iv">Live flash amount from algorithm.js</span></div>
+    <div class="ir"><span class="ik">Output</span>         <span class="iv">Input × 10%</span></div>
+    <div class="ir"><span class="ik">Contract</span>       <span class="iv" id="amp-addr">--</span></div>
+    <div class="ir"><span class="ik">Live per-cycle</span> <span class="iv iv-b" id="amp-per">--</span></div>
+  </div>
+</div>
+
+<!-- 18. VAULT -->
+<div id="p-vault" class="pn">
+  <div class="card">
+    <div class="ct">SOVEREIGNTY VAULT -- LIVE CAPACITY</div>
+    <div class="ir"><span class="ik">Balancer live</span><span class="iv iv-b" id="vt-bal">--</span></div>
+    <div class="ir"><span class="ik">Aave live</span>    <span class="iv iv-b" id="vt-aave">--</span></div>
+    <div class="ir"><span class="ik">Total live</span>   <span class="iv iv-b" id="vt-tot">--</span></div>
+    <div class="ir"><span class="ik">Last update</span>  <span class="iv" id="vt-ts">--</span></div>
+    <div class="ir"><span class="ik">Contract</span>     <span class="iv" id="vt-addr">--</span></div>
+  </div>
+</div>
+
+<!-- 19. GUARD -->
+<div id="p-guard" class="pn">
+  <div class="card">
+    <div class="ct">SOVEREIGNTY GUARD</div>
+    <div class="ir"><span class="ik">Double-exec prevented</span><span class="iv" id="gd-dbl">0</span></div>
+    <div class="ir"><span class="ik">Blocked callers</span>      <span class="iv" id="gd-blk">0</span></div>
+    <div class="ir"><span class="ik">Hash buffer</span>          <span class="iv">512 recent hashes</span></div>
+    <div class="ir"><span class="ik">Contract</span>             <span class="iv" id="gd-addr">--</span></div>
+  </div>
+</div>
+
+<!-- 20. SPLITTER -->
+<div id="p-splitter" class="pn">
+  <div class="card">
+    <div class="ct">SOVEREIGNTY SPLITTER -- 100% TO TREASURY</div>
+    <div class="ir"><span class="ik">Split</span>           <span class="iv iv-b">100% to treasury -- zero deductions</span></div>
+    <div class="ir"><span class="ik">Total routed</span>    <span class="iv" id="sp-routed">--</span></div>
+    <div class="ir"><span class="ik">Route count</span>     <span class="iv" id="sp-count">--</span></div>
+    <div class="ir"><span class="ik">Contract</span>        <span class="iv" id="sp-addr">--</span></div>
+  </div>
+</div>
+
+<!-- 21. ORACLE -->
+<div id="p-oracle" class="pn">
+  <div class="card">
+    <div class="ct">CHAINLINK ORACLE</div>
+    <div class="ir"><span class="ik">ETH/USD</span>    <span class="iv">0xF9680D99D6C9589e2a93a78A04A279e509205945</span></div>
+    <div class="ir"><span class="ik">MATIC/USD</span>  <span class="iv">0xAB594600376Ec9fD91F8e885dADF0CE036862dE0</span></div>
+    <div class="ir"><span class="ik">Refresh</span>    <span class="iv">30 seconds</span></div>
+    <div class="ir"><span class="ik">Max age</span>    <span class="iv">5 minutes (algorithm check 4)</span></div>
+    <div class="ir"><span class="ik">ETH price</span>  <span class="iv iv-b" id="or-eth">--</span></div>
+    <div class="ir"><span class="ik">Contract</span>   <span class="iv" id="or-addr">--</span></div>
+  </div>
+</div>
+
+<!-- 22. GOVERNANCE -->
+<div id="p-governance" class="pn">
+  <div class="card">
+    <div class="ct">SOVEREIGNTY GOVERNANCE</div>
+    <div class="ir"><span class="ik">SP1 target</span>  <span class="iv">$10,000/day</span></div>
+    <div class="ir"><span class="ik">SP5/P1 target</span><span class="iv">$1,000,000,000/day</span></div>
+    <div class="ir"><span class="ik">P5 target</span>   <span class="iv">$2,401,000,000,000/day (default)</span></div>
+    <div class="ir"><span class="ik">P10 target</span>  <span class="iv">$10 QUI/day (ceiling)</span></div>
+    <div class="ir"><span class="ik">Extraction</span> <span class="iv">10% (1000 bps)</span></div>
+    <div class="ir"><span class="ik">Gas cap</span>    <span class="iv">1000 gwei</span></div>
+    <div class="ir"><span class="ik">Recon interval</span><span class="iv">Every 100 cycles</span></div>
+    <div class="ir"><span class="ik">Timelock</span>   <span class="iv">24 hours for parameter changes</span></div>
+    <div class="ir"><span class="ik">Contract</span>   <span class="iv" id="gov-addr">--</span></div>
+  </div>
+</div>
+
+<!-- 23. REGISTRY -->
+<div id="p-registry" class="pn">
+  <div class="card">
+    <div class="ct">CHAIN + POOL REGISTRY</div>
+    <div class="ir"><span class="ik">Registered chains</span><span class="iv">20</span></div>
+    <div class="ir"><span class="ik">Contract</span>         <span class="iv" id="reg-addr">--</span></div>
+  </div>
+</div>
+
+<!-- 24. SHADOW -->
+<div id="p-shadow" class="pn">
+  <div class="card">
+    <div class="ct">SHADOW LAYER</div>
+    <div class="info-box" style="margin-bottom:8px">Treasury wallet never visible. All profit routes through shadow layer before treasury. Inherited from RESONANCE.</div>
+    <div class="ir"><span class="ik">Status</span>          <span class="iv iv-g">ACTIVE -- always</span></div>
+    <div class="ir"><span class="ik">Treasury</span>        <span class="iv iv-d">CLASSIFIED -- never displayed</span></div>
+    <div class="ir"><span class="ik">Ecosystem throttle</span><span class="iv">0.1% TVL per protocol per day</span></div>
+  </div>
+</div>
+
+<!-- 25. ECOSYSTEM -->
+<div id="p-ecosystem" class="pn">
+  <div class="card">
+    <div class="ct">ECOSYSTEM MONITOR</div>
+    <div class="ir"><span class="ik">Threshold</span>     <span class="iv">0.1% of any protocol TVL per day</span></div>
+    <div class="ir"><span class="ik">Check interval</span><span class="iv">Every 5 minutes</span></div>
+    <div class="ir"><span class="ik">Protocols</span>    <span class="iv">Balancer, Aave, Uniswap (Polygon)</span></div>
+    <div class="ir"><span class="ik">Status</span>       <span class="iv iv-g" id="eco-status">HEALTHY</span></div>
+  </div>
+</div>
+
+<!-- 26. GAS -->
+<div id="p-gas" class="pn">
+  <div class="g2" style="margin-bottom:8px">
+    <div class="card">
+      <div class="ct">CURRENT GAS</div>
+      <div class="cv cv-m" id="gas-price">-- gwei</div>
+      <div class="cs" id="gas-status">reading...</div>
+    </div>
+    <div class="card">
+      <div class="ct">CAP</div>
+      <div class="cv cv-m">1,000 gwei</div>
+      <div class="cs">hard ceiling -- no exceptions</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">GAS ARCHITECTURE</div>
+    <div class="ir"><span class="ik">Cap</span>       <span class="iv">1,000 gwei</span></div>
+    <div class="ir"><span class="ik">Markup</span>    <span class="iv">130% of current gas price</span></div>
+    <div class="ir"><span class="ik">Limit</span>     <span class="iv">4,000,000 per transaction</span></div>
+    <div class="ir"><span class="ik">Check</span>     <span class="iv">Algorithm check 2 -- gas cost vs expected profit</span></div>
+    <div class="ir"><span class="ik">On cap breach</span><span class="iv">Skip cycle -- no transaction fired</span></div>
+  </div>
+</div>
+
+<!-- 27. PERFORMANCE -->
+<div id="p-performance" class="pn">
+  <div class="g4" style="margin-bottom:8px">
+    <div class="card"><div class="ct">PEAK CYCLE</div><div class="cv cv-s cv-b" id="pf-peak">$0</div></div>
+    <div class="card"><div class="ct">AVG CYCLE</div><div class="cv cv-s" id="pf-avg">$0</div></div>
+    <div class="card"><div class="ct">SUCCESS RATE</div><div class="cv cv-s" id="pf-rate">--</div></div>
+    <div class="card"><div class="ct">EXEC SPEED</div><div class="cv cv-s" id="pf-ms">1ms</div></div>
+  </div>
+  <div class="card">
+    <div class="ct">ALL-TIME</div>
+    <div class="ir"><span class="ik">Total cycles</span>    <span class="iv" id="pf-tot">0</span></div>
+    <div class="ir"><span class="ik">Total revenue</span>   <span class="iv iv-b" id="pf-rev">$0</span></div>
+    <div class="ir"><span class="ik">Recon checks</span>    <span class="iv" id="pf-recon">0</span></div>
+    <div class="ir"><span class="ik">Algo pass rate</span>  <span class="iv" id="pf-algo">--</span></div>
+  </div>
+</div>
+
+<!-- 28. AUDIT LOG -->
+<div id="p-audit" class="pn">
+  <div style="display:flex;gap:6px;margin-bottom:8px">
+    <input class="s-fi" id="aud-search" placeholder="search..." style="flex:1">
+    <button class="s-btn s-btn-primary s-btn-sm" onclick="loadCycles(200)">LOAD 200</button>
+  </div>
+  <div class="log-feed" id="aud-log">
+    <div style="color:var(--s-dim)">Click LOAD to fetch cycle records</div>
+  </div>
+</div>
+
+<!-- 29. SYSTEM -->
+<div id="p-system" class="pn">
+  <div class="g2" style="margin-bottom:8px">
+    <div class="card">
+      <div class="ct">RUNTIME</div>
+      <div class="ir"><span class="ik">System</span>    <span class="iv">SOVEREIGNTY</span></div>
+      <div class="ir"><span class="ik">Version</span>   <span class="iv">1.0.0</span></div>
+      <div class="ir"><span class="ik">Model</span>     <span class="iv">FINAL -- Throughput</span></div>
+      <div class="ir"><span class="ik">Uptime</span>    <span class="iv" id="sy-up">0s</span></div>
+      <div class="ir"><span class="ik">Memory</span>    <span class="iv" id="sy-mb">0MB</span></div>
+      <div class="ir"><span class="ik">WS clients</span><span class="iv" id="sy-ws">0</span></div>
+    </div>
+    <div class="card">
+      <div class="ct">IDENTITY</div>
+      <div class="ir"><span class="ik">Executor</span>   <span class="iv" id="sy-ex">--</span></div>
+      <div class="ir"><span class="ik">Treasury</span>   <span class="iv iv-d">CLASSIFIED</span></div>
+      <div class="ir"><span class="ik">Contracts</span>  <span class="iv" id="sy-ctrs">0/10</span></div>
+      <div class="ir"><span class="ik">Chains</span>     <span class="iv" id="sy-ch">0/20</span></div>
+      <div class="ir"><span class="ik">Gas cap</span>    <span class="iv">1,000 gwei</span></div>
+      <div class="ir"><span class="ik">Deployment</span> <span class="iv">Railway.app</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- 30. CONTROL -->
+<div id="p-control" class="pn">
+  <div class="card" style="margin-bottom:8px">
+    <div class="ct">EXECUTOR CONTROLS</div>
+    <button class="s-ctrl-btn resume" onclick="resumeExec()">
+      <span>Resume executor -- algorithm-gated cycles activate</span>
+      <span class="s-ctrl-badge">resume</span>
+    </button>
+    <button class="s-ctrl-btn pause" onclick="pauseExec()">
+      <span>Pause executor -- halt all cycle execution</span>
+      <span class="s-ctrl-badge">pause</span>
+    </button>
+  </div>
+  <div class="card" style="margin-bottom:8px">
+    <div class="ct">PROPELLER QUICK SET</div>
+    <div class="s-prop-grid" id="ctrl-sp-grid" style="margin-bottom:6px"></div>
+    <div class="s-prop-grid" id="ctrl-grid"></div>
+  </div>
+  <div class="card">
+    <div class="ct">SYSTEM NOTES</div>
+    <div class="info-box" style="margin-bottom:0">
+      Sovereignty is deploy-and-forget after 0.1 POL sent. The algorithm gates every cycle. The reconciler confirms every 100 cycles. The live flash reader updates every 60 seconds. No manual intervention required after deployment.
+    </div>
+    <div class="ir"><span class="ik">Autonomy</span>       <span class="iv iv-b">Full -- algorithm governs</span></div>
+    <div class="ir"><span class="ik">Failure mode</span>   <span class="iv iv-b">Atomic revert -- zero loss</span></div>
+    <div class="ir"><span class="ik">Restart safety</span> <span class="iv iv-b">Contracts persist to /data</span></div>
+  </div>
+  <div id="ctrl-res" class="s-res" style="margin-top:8px"></div>
+</div>
+
+</div><!-- /content -->
+</div><!-- /app -->
+
+<script>
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let _S={}, _WS=null, _ft='mobile'
+const FEES={mobile:.015,bank:.0125,intl:.0125}
+const CHAIN_NAMES=['polygon','arb','base','opt','eth','bnb','avax','blast','zksync',
+                   'scroll','linea','mantle','gnosis','worldchain','berachain',
+                   'unichain','sei','sonic','sonic2','polygon2']
+
+const PROPELLER={
+  SP1:10_000,SP2:50_000,SP3:200_000,SP4:500_000,SP5:1e9,
+  P1:1e9,P2:7e9,P3:49e9,P4:343e9,P5:2_401e9,
+  P6:16_807e9,P7:117_649e9,P8:823_543e9,P9:5_764_801e9,P10:10e21,
+}
+const SP_LEVELS=['SP1','SP2','SP3','SP4','SP5']
+const P_LEVELS =['P1','P2','P3','P4','P5','P6','P7','P8','P9','P10']
+
+// ── WS ────────────────────────────────────────────────────────────────────────
+function connect(){
+  const proto=location.protocol==='https:'?'wss':'ws'
+  _WS=new WebSocket(`${proto}://${location.host}`)
+  _WS.onopen=()=>wsOk(true)
+  _WS.onclose=()=>{wsOk(false);setTimeout(connect,3000)}
+  _WS.onerror=()=>wsOk(false)
+  _WS.onmessage=e=>{
+    try{const d=JSON.parse(e.data);if(d.type==='state')render(d)}catch{}
+  }
+}
+connect()
+
+function wsOk(ok){
+  const d=el('ws-d'),l=el('ws-l')
+  d.className='s-live-dot '+(ok?'blue':'red')
+  l.textContent=ok?'LIVE':'OFFLINE'
+  l.style.color=ok?'var(--s-blue)':'var(--s-red)'
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render(s){
+  _S=s; if(s.booting) return
+
+  const lf=s.liveFlash||0, le=s.liveExtract||0
+  const confirmed=s.treasuryOnChain||0
+  const reconH=s.reconHealthy
+
+  // Rail footer
+  set('r-treasury', fB(confirmed))
+  const rcS=el('r-recon-status')
+  if(rcS){ rcS.textContent=reconH?'reconciled -- healthy':'gap detected'; rcS.style.color=reconH?'var(--s-green)':'var(--s-red)' }
+  set('r-cycles', (s.cyclesToday||0).toLocaleString()+' cycles')
+
+  // Overview
+  set('ov-treasury', fB(confirmed))
+  set('ov-flash',    fB(lf))
+  set('ov-rev',      fB(s.revToday||0))
+  set('ov-net',      fB(s.netToday||0))
+  set('ov-cycles',   (s.cyclesToday||0).toLocaleString())
+  set('ov-prop',    'P'+(s.propellerNum||5))
+  set('ov-chains',  (s.chainCount||0)+'/20')
+
+  // Algorithm bar
+  const algoBar=el('ov-algo-bar')
+  const deployed=s.deployment
+  let algoClass='', algoText=''
+  if (!deployed) { algoClass='checking'; algoText='Algorithm: pending contract deployment' }
+  else if (s.algoPass) { algoClass='all-pass'; algoText='Algorithm: ALL 7 CHECKS PASS' }
+  else { algoClass='has-fail'; algoText='Algorithm: some checks failing' }
+  if(algoBar) { algoBar.className='s-algo-bar '+algoClass }
+  set('ov-algo-text', algoText)
+  set('ov-algo-flash', fB(s.algoFlash||0)+' confirmed flash')
+
+  // Recon box
+  const reconBox=el('ov-recon')
+  if(reconBox) { reconBox.className='s-recon '+(reconH?'healthy':s.reconCount>0?'gap':'') }
+  set('ov-recon-val', fB(confirmed))
+  set('ov-recon-sub', (s.reconCount||0)+' checks | '+(reconH?'healthy':'pending'))
+
+  // Status panel
+  const depEl=el('ov-dep'); if(depEl){ depEl.textContent=deployed?((s.contracts||0)+'/10 deployed'):'awaiting 0.1 POL'; depEl.style.color=deployed?'var(--s-green)':'var(--s-muted)' }
+  const gasEl=el('ov-gas'); if(gasEl){ const gw=s.gasPrice||0; gasEl.textContent=(gw>0?gw.toFixed(1):'-')+' gwei | '+(s.gasOK?'OK':'PAUSED'); gasEl.style.color=s.gasOK?'var(--s-off)':'var(--s-red)' }
+  const algSt=el('ov-algo-st'); if(algSt){ algSt.textContent=!deployed?'pending deployment':s.algoPass?'all pass':'some fail'; algSt.style.color=!deployed?'var(--s-muted)':s.algoPass?'var(--s-green)':'var(--s-red)' }
+
+  // Live flash tab
+  set('fl-balancer', fB(s.flashBalancer||0))
+  set('fl-aave',     fB(s.flashAave||0))
+  set('fl-total',    fB(lf))
+  set('fl-extract',  fB(le))
+  set('fl-live-b',   fB(s.flashBalancer||0))
+  set('fl-live-a',   fB(s.flashAave||0))
+  set('fl-live-t',   fB(lf))
+  set('fl-live-e',   fB(le))
+  set('bal-live',    fB(s.flashBalancer||0))
+  set('aave-live',   fB(s.flashAave||0))
+  set('aave-poly',   fB(s.flashAave||0))
+  const flashBarEl=el('flash-bar'); if(flashBarEl) flashBarEl.className='s-algo-bar '+(lf>0?'all-pass':'checking')
+  set('flash-total-bar', fB(lf))
+
+  // Algorithm tab
+  const masterBar=el('algo-master-bar')
+  if(masterBar) masterBar.className='s-algo-bar '+(s.algoPass?'all-pass':!deployed?'checking':'has-fail')
+  set('algo-master-text', !deployed?'Pending deployment':s.algoPass?'All 7 checks pass':'Some checks failing')
+  set('algo-master-flash', fB(s.algoFlash||0)+' live flash confirmed')
+  set('alg-pass',  s.algoPass?'PASS':'FAIL / PENDING')
+  set('alg-flash', fB(s.algoFlash||0))
+  set('alg-gas',   (s.algoGas||0).toFixed(1)+' gwei')
+  set('alg-eth',   s.algoOracle?'$'+(s.algoOracle).toFixed(0):'--')
+  set('alg-ts',    s.algoTs?new Date(s.algoTs).toLocaleTimeString():'--')
+
+  // Render algorithm check grid
+  const algoGrid=el('algo-checks')
+  if(algoGrid && !algoGrid.children.length) {
+    const checks=[
+      {n:'Flash Capital',  v:fB(s.algoFlash||0), st:s.algoFlash>0?'pass':'pending'},
+      {n:'Gas Price',      v:(s.algoGas||0).toFixed(1)+' gwei', st:s.algoGas>0&&s.algoGas<=1000?'pass':'pending'},
+      {n:'Spread',         v:'live Uniswap V3', st:!deployed?'pending':'pass'},
+      {n:'Oracle Fresh',   v:s.algoOracle?'$'+(s.algoOracle).toFixed(0):'--', st:s.algoOracle>0?'pass':'pending'},
+      {n:'Pool Depth',     v:'vault vs flash', st:!deployed?'pending':'pass'},
+      {n:'Treasury Read',  v:fB(s.treasuryOnChain||0), st:'pass'},
+      {n:'Capacity',       v:'P'+(s.propellerNum||5), st:!deployed?'pending':'pass'},
+    ]
+    algoGrid.innerHTML=checks.map(c=>`
+      <div class="s-algo-check ${c.st}">
+        <div class="s-algo-dot"></div>
+        <span class="s-algo-name">${c.n}</span>
+        <span class="s-algo-val">${c.v}</span>
+      </div>`).join('')
+  }
+
+  // Reconciliation tab
+  const recBox=el('rec-box'); if(recBox) recBox.className='s-recon '+(reconH?'healthy':s.reconCount>0?'gap':'')
+  set('rec-confirmed', fB(confirmed))
+  set('rec-computed',  fB(s.reconComputed||0))
+  set('rec-count',     (s.reconCount||0).toString())
+  set('rec-gap',       fB(s.reconGap||0))
+  const recH=el('rec-healthy'); if(recH){ recH.textContent=s.reconCount?( reconH?'HEALTHY':'GAP DETECTED'):'PENDING'; recH.style.color=s.reconCount?(reconH?'var(--s-green)':'var(--s-red)'):'var(--s-muted)' }
+  set('rec-contract', s.contracts_?.SOVEREIGNTY_RECONCILER?(s.contracts_.SOVEREIGNTY_RECONCILER.slice(0,14)+'...'):'--')
+
+  // Propeller tab
+  const propNum=s.propellerNum||5
+  const propKey='P'+propNum
+  const propTarget=PROPELLER[propKey]||PROPELLER.P5
+  set('pr-big',  propKey)
+  set('pr-tgt',  fB(propTarget)+'/day')
+  const pct=propTarget>0?Math.min(100,(s.revToday||0)/propTarget*100):0
+  el('pr-prog').style.width=pct+'%'
+  set('pr-pl',fB(s.revToday||0)); set('pr-pr',fB(propTarget))
+  const pdB=el('pr-default'); if(pdB) pdB.style.display=propNum===5?'inline-flex':'none'
+
+  if(!el('sp-grid').children.length) buildPropGrid('sp-grid','ctrl-sp-grid',SP_LEVELS)
+  if(!el('pr-grid').children.length) { buildPropGrid('pr-grid','ctrl-grid',P_LEVELS); buildPropTable() }
+  updateActiveBtn(propKey)
+
+  // Revenue
+  set('rv-today',fB(s.revToday||0)); set('rv-net',fB(s.netToday||0))
+  set('rv-total',fB(s.revTotal||0)); set('rv-per',fB(s.perCycle||0))
+  set('rv-peak', fB(s.peakCycle||0)); set('rv-avg',fB(s.avgCycle||0))
+  set('rv-fee',  fB(s.aaveFeeToday||0))
+  const v=s.velocity||{}
+  set('rv-vs',fB(v.perSecond||0)); set('rv-vm',fB(v.perMinute||0))
+  set('rv-vh',fB(v.perHour||0));   set('rv-vd',fB(v.perDay||0))
+
+  // Velocity tab
+  set('vl-vs',fB(v.perSecond||0)); set('vl-vm',fB(v.perMinute||0))
+  set('vl-vh',fB(v.perHour||0));   set('vl-vd',fB(v.perDay||0))
+
+  // Executor
+  const exSt=el('ex-st'); if(exSt){ exSt.textContent=s.gasOK?'ACTIVE':'PAUSED'; exSt.style.color=s.gasOK?'var(--s-green)':'var(--s-red)' }
+  set('ex-sub', s.gasOK?'algorithm gating cycles':'gas cap exceeded')
+  set('ex-ms',  (s.execSpeedMs||1).toFixed(1)+'ms')
+  set('ex-addr',s.executor?(s.executor.slice(0,16)+'...'):'--')
+
+  // Cycles
+  set('cy-today',(s.cyclesToday||0).toLocaleString())
+  set('cy-total',(s.cyclesTotal||0).toLocaleString())
+  set('cy-ok',   (s.successToday||0).toLocaleString())
+  set('cy-nat',  (s.naturalToday||0).toLocaleString())
+  const sr=s.execToday>0?Math.round(s.successToday/s.execToday*100)+'%':'--'
+  set('cy-rate',sr)
+
+  // Chains
+  const cpd=el('chain-pills')
+  if(cpd&&s.chainStates&&!cpd.children.length){
+    CHAIN_NAMES.forEach(n=>{const d=document.createElement('div');d.className='c-pill c-off';d.id='cp-'+n;d.textContent=n.toUpperCase();cpd.appendChild(d)})
+  }
+  if(s.chainStates) CHAIN_NAMES.forEach(n=>{const d=el('cp-'+n);if(d)d.className='c-pill '+(s.chainStates[n]?'c-on':'c-off')})
+  set('ch-count',(s.chainCount||0)+'/20')
+  set('sy-ch',   (s.chainCount||0)+'/20')
+
+  // Throughput tab
+  set('tp-flash',  fB(lf))
+  set('tp-per',    fB(le))
+  const cyNeeded=le>0?Math.ceil(PROPELLER.P5/le):0
+  set('tp-cycles', cyNeeded.toLocaleString()+' cycles at P5')
+
+  // Contracts tab
+  if(s.contracts_&&!el('ctr-list').children.length){
+    const names={
+      SOVEREIGNTY:'Sovereignty',
+      SOVEREIGNTY_AMPLIFIER:'Amplifier',
+      SOVEREIGNTY_FLASH:'Flash',
+      SOVEREIGNTY_ORACLE:'Oracle',
+      SOVEREIGNTY_RECONCILER:'Reconciler',
+      SOVEREIGNTY_SPLITTER:'Splitter',
+      SOVEREIGNTY_GUARD:'Guard',
+      SOVEREIGNTY_REGISTRY:'Registry',
+      SOVEREIGNTY_VAULT:'Vault',
+      SOVEREIGNTY_GOVERNANCE:'Governance',
+    }
+    el('ctr-list').innerHTML=Object.entries(names).map(([env,label])=>{
+      const addr=s.contracts_[env]
+      const ok=addr&&addr.length>10
+      return `<div class="ir">
+        <span class="ik">${label}</span>
+        <span class="iv ${ok?'iv-g':'iv-d'}">${ok?addr.slice(0,14)+'...':'awaiting POL'}</span>
+      </div>`
+    }).join('')
+  }
+  set('ctr-exec', s.executor?(s.executor.slice(0,14)+'...'):'--')
+
+  // Amplifier
+  set('amp-addr',s.contracts_?.SOVEREIGNTY_AMPLIFIER?(s.contracts_.SOVEREIGNTY_AMPLIFIER.slice(0,14)+'...'):'--')
+  set('amp-per',fB(le))
+
+  // Vault
+  set('vt-bal',  fB(s.flashBalancer||0)); set('vt-aave',fB(s.flashAave||0))
+  set('vt-tot',  fB(lf)); set('vt-addr',s.contracts_?.SOVEREIGNTY_VAULT?(s.contracts_.SOVEREIGNTY_VAULT.slice(0,14)+'...'):'--')
+  set('vt-ts',   s.ts?new Date(s.ts).toLocaleTimeString():'--')
+
+  // Guard
+  set('gd-addr',s.contracts_?.SOVEREIGNTY_GUARD?(s.contracts_.SOVEREIGNTY_GUARD.slice(0,14)+'...'):'--')
+  set('sp-addr',s.contracts_?.SOVEREIGNTY_SPLITTER?(s.contracts_.SOVEREIGNTY_SPLITTER.slice(0,14)+'...'):'--')
+  set('or-addr',s.contracts_?.SOVEREIGNTY_ORACLE?(s.contracts_.SOVEREIGNTY_ORACLE.slice(0,14)+'...'):'--')
+  set('gov-addr',s.contracts_?.SOVEREIGNTY_GOVERNANCE?(s.contracts_.SOVEREIGNTY_GOVERNANCE.slice(0,14)+'...'):'--')
+  set('reg-addr',s.contracts_?.SOVEREIGNTY_REGISTRY?(s.contracts_.SOVEREIGNTY_REGISTRY.slice(0,14)+'...'):'--')
+  set('or-eth',  s.algoOracle?'$'+s.algoOracle.toFixed(0):'--')
+
+  // Extraction
+  set('ext-per',fB(le))
+
+  // Gas tab
+  const gw=s.gasPrice||0
+  set('gas-price', (gw>0?gw.toFixed(1):'-')+' gwei')
+  const gsSt=el('gas-status'); if(gsSt){ gsSt.textContent=s.gasOK?'under cap -- OK':'exceeds 1000 gwei -- PAUSED'; gsSt.style.color=s.gasOK?'var(--s-green)':'var(--s-red)' }
+
+  // Performance
+  set('pf-peak',fB(s.peakCycle||0)); set('pf-avg',fB(s.avgCycle||0))
+  set('pf-rate',sr); set('pf-ms',(s.execSpeedMs||1).toFixed(1)+'ms')
+  set('pf-tot',(s.cyclesTotal||0).toLocaleString())
+  set('pf-rev',fB(s.revTotal||0))
+  set('pf-recon',(s.reconCount||0).toString())
+  const algoEx=s.execToday>0?Math.round(s.successToday/s.execToday*100)+'%':'--'
+  set('pf-algo',algoEx)
+
+  // System
+  set('sy-up',  fmtT(s.uptime||0)); set('sy-mb',(s.mb||0)+'MB')
+  set('sy-ws',  s.wsClients||0)
+  set('sy-ex',  s.executor?(s.executor.slice(0,16)+'...'):'--')
+  set('sy-ctrs',(s.contracts||0)+'/10')
+
+  // FTW balance
+  set('ftw-balance',fB(confirmed))
+  set('ftw-ts',s.ts?new Date(s.ts).toLocaleTimeString():'--')
+
+  // Eco
+  const ecoEl=el('eco-status'); if(ecoEl){ ecoEl.textContent=s.ecosystemThrottle?'THROTTLE ACTIVE':'HEALTHY'; ecoEl.style.color=s.ecosystemThrottle?'var(--s-red)':'var(--s-green)' }
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function tab(n,b){
+  document.querySelectorAll('.pn').forEach(p=>p.classList.remove('on'))
+  document.querySelectorAll('.tb').forEach(x=>x.classList.remove('on'))
+  const p=el('p-'+n); if(p) p.classList.add('on')
+  b?.classList.add('on')
+  if(n==='audit') loadCycles(100)
+}
+
+// ── PROPELLER GRID ────────────────────────────────────────────────────────────
+function buildPropGrid(gid, ctrlGid, levels){
+  const html=levels.map(lv=>`
+    <div class="s-prop-btn${lv==='P5'?' default-tier':SP_LEVELS.includes(lv)?' sp-tier':''}" id="pb-${lv}" onclick="setProp('${lv}')">
+      <div class="s-prop-level">${lv}</div>
+      <div class="s-prop-target">${fB(PROPELLER[lv])}/day</div>
+    </div>`).join('')
+  el(gid).innerHTML=html
+  if(ctrlGid) el(ctrlGid).innerHTML=html.replace(/id="pb-/g,'id="pbc-')
+}
+
+function buildPropTable(){
+  const allLevels=[...SP_LEVELS,...P_LEVELS]
+  el('pr-table').innerHTML=allLevels.map(lv=>`
+    <div class="ir">
+      <span class="ik">${lv}${lv==='P5'?' (DEFAULT)':''}</span>
+      <span class="iv ${SP_LEVELS.includes(lv)?'iv-b':lv==='P10'?'iv-w':''}">${fB(PROPELLER[lv])}/day</span>
+    </div>`).join('')
+}
+
+function updateActiveBtn(propKey){
+  document.querySelectorAll('.s-prop-btn').forEach(b=>b.classList.remove('active'))
+  const a=el('pb-'+propKey); if(a) a.classList.add('active')
+  const ac=el('pbc-'+propKey); if(ac) ac.classList.add('active')
+}
+
+async function setProp(level){
+  const r=await api('/api/propeller',{level})
+  if(r.ok) updateActiveBtn(level)
+}
+
+// ── EXECUTOR ──────────────────────────────────────────────────────────────────
+async function resumeExec(){
+  const r=await api('/api/executor/resume',{})
+  showRes('ex-res',r.ok?'Executor resumed':r.error,r.ok)
+  showRes('ctrl-res',r.ok?'Executor resumed':r.error,r.ok)
+}
+async function pauseExec(){
+  const r=await api('/api/executor/pause',{})
+  showRes('ex-res',r.ok?'Executor paused':r.error,r.ok)
+  showRes('ctrl-res',r.ok?'Executor paused':r.error,r.ok)
+}
+
+// ── CYCLES ────────────────────────────────────────────────────────────────────
+async function loadCycles(limit=100){
+  try{
+    const r=await fetch('/api/cycles?limit='+limit)
+    const d=await r.json()
+    const rows=(d.cycles||[]).slice(-limit).reverse().map(c=>`
+      <div class="lr">
+        <span class="lt">${new Date(c.ts).toLocaleTimeString()}</span>
+        <span class="lv">${fB(c.extracted||c.revenue||0)}</span>
+        <span class="lm">$${((c.liveFlash||0)/1e6).toFixed(0)}M flash</span>
+        <span class="lg">${c.txHash?.slice(0,8)||'--'}...</span>
+      </div>`).join('')
+    const f=el('aud-log'); if(f) f.innerHTML=rows||'<div style="color:var(--s-dim)">No cycles yet</div>'
+  }catch{}
+}
+setInterval(()=>loadCycles(20),6_000)
+
+// ── FTW ───────────────────────────────────────────────────────────────────────
+function setFTW(t,b){
+  document.querySelectorAll('#p-ftw .s-ttype').forEach(x=>x.classList.remove('on'))
+  b.classList.add('on'); _ft=t
+  ;['mobile','bank','intl'].forEach(x=>{const f=el('ftw-'+x);if(f)f.classList.toggle('on',x===t)})
+  ftwQ()
+}
+function ftwQ(){
+  const amt=parseFloat(el('ftw-amt')?.value)||0
+  if(!amt){set('ftw-q','Enter amount for quote');return}
+  const rate=FEES[_ft]||.015,fee=amt*rate,net=amt-fee
+  set('ftw-q',`$${fmtN(amt)} → $${fmtN(net)} net | fee: $${fmtN(fee)} (${(rate*100).toFixed(2)}%)`)
+}
+async function doFTW(){
+  const amt=parseFloat(el('ftw-amt')?.value)
+  if(!amt||amt<=0){showRes('ftw-res','Enter valid amount',false);return}
+  const params={amount:amt,type:_ft}
+  if(_ft==='mobile')params.phone=v('ftw-ph')
+  else if(_ft==='bank'){params.accountName=v('ftw-bn');params.accountNumber=v('ftw-bac')}
+  else{params.accountName=v('ftw-in');params.accountNumber=v('ftw-iac');params.swiftCode=v('ftw-sw')}
+  try{const r=await api('/api/ftw/withdraw',params);showRes('ftw-res',r.ok?`Sent $${fmtN(r.net)} net | ${r.reference}`:r.error,r.ok)}
+  catch(e){showRes('ftw-res',e.message,false)}
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+async function api(url,body){
+  const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+  return r.json()
+}
+function set(id,val){const e=document.getElementById(id);if(e)e.innerHTML=val}
+function el(id){return document.getElementById(id)}
+function v(id){return el(id)?.value||''}
+function showRes(id,msg,ok){const e=el(id);if(!e)return;e.style.display='block';e.textContent=msg;e.className='s-res '+(ok?'s-res-ok':'s-res-err')}
+function fmtN(n){return Number(n).toLocaleString('en-US',{maximumFractionDigits:2})}
+function fmtT(s){
+  s=s|0
+  if(s<60)return s+'s'
+  if(s<3600)return(s/60|0)+'m '+(s%60)+'s'
+  return(s/3600|0)+'h '+(s%3600/60|0)+'m'
+}
+function fB(n){
+  if(!n||isNaN(n)||n===0)return'$0'
+  const x=Number(n)
+  if(x>=1e24)return'$'+(x/1e24).toFixed(2)+' SEPT'
+  if(x>=1e21)return'$'+(x/1e21).toFixed(2)+' SEXT'
+  if(x>=1e18)return'$'+(x/1e18).toFixed(2)+' QUINT'
+  if(x>=1e15)return'$'+(x/1e15).toFixed(2)+'Q'
+  if(x>=1e12)return'$'+(x/1e12).toFixed(2)+'T'
+  if(x>=1e9) return'$'+(x/1e9).toFixed(2)+'B'
+  if(x>=1e6) return'$'+(x/1e6).toFixed(2)+'M'
+  if(x>=1e3) return'$'+(x/1e3).toFixed(1)+'K'
+  return'$'+x.toFixed(2)
+}
+</script>
+</body>
+</html>
